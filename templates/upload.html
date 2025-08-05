@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузка JSON файла</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 10);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .errorlist {
+            color: #650505;
+            font-size: 14px;
+            margin: 5px 0;
+            list-style: none;
+            border-left: 5px solid #650505;
+            background-color: #e36161;
+            padding: 10px 10px 10px 10px;
+
+        }
+
+        .help {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            border-left: 5px solid green;
+            {#background-color: greenyellow;#}
+            background-color: #C9F0DD;
+            width: 300px;
+            padding: 10px 10px 10px 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Загрузка JSON файла</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            {{ form.json_file.label_tag }}
+            {{ form.json_file }}
+            {% if form.json_file.help_text %}
+                <p class="help">{{ form.json_file.help_text }}</p>
+            {% endif %}
+{#            {{ form.as_p }}  Можно было так, но хотел отдельно вывести ошибки#}
+        </div>
+
+        <button type="submit">Загрузить файл</button>
+    </form>
+
+    {% if form.errors %}
+{#        <div style="margin-top: 20px; color: #d32f2f;">#}
+        <div class="errorlist">
+            <strong>Ошибки валидации:</strong>
+            {{ form.non_field_errors }}
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <p class="help">
+        Пример содержимого файла:<br>
+        <code>[{"name": "Событие 1", "date": "2025-04-05_10:30"}]</code>
+    </p>
+
+    {% if success_message %}
+        <p class="success">{{ success_message }}</p>
+    {% endif %}
+</div>
+</body>
+</html>
+
+
+
