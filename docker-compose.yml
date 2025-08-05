@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: django_db
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "dwnjsn"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - django-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma_django
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1          # позволяет входить с любым пользователем (удобно для root)
+      MYSQL_ROOT_PASSWORD: "root"
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - django-network
+
+  web:
+    build: .
+    container_name: django_app
+    command: >
+      sh -c "
+        echo 'Ожидание подключения к БД...' &&
+        sleep 5 &&
+        python manage.py makemigrations &&
+        python manage.py migrate &&
+        echo 'Запуск Gunicorn...' &&
+        gunicorn --bind 0.0.0.0:8000 ojpq77.wsgi:application"
+    ports:
+      - "8081:8000"
+    depends_on:
+      - db
+    networks:
+      - django-network
+
+  nginx:
+    image: nginx:latest
+    container_name: django-nginx
+    ports:
+      - "8082:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+#      - ./static:/static  # статические файлы
+#      - ./media:/media    # медиа-файлы
+    depends_on:
+      - web
+    networks:
+      - django-network
+
+volumes:
+  mysql_data:
+  # больше не нужны pgadmin и postgres
+
+networks:
+  django-network:
+    driver: bridge

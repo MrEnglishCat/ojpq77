@@ -30,8 +30,8 @@ SECRET_KEY = 'django-insecure-et%997nmc_0r5-o@qrrrl58sn)d+e16^2#i1n0#k)lt3np130-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': 'dwnjsn',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '3306',
     }
 }
