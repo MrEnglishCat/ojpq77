@@ -33,7 +33,7 @@ services:
     command: >
       sh -c "
         echo 'Ожидание подключения к БД...' &&
-        sleep 5 &&
+        sleep 7 &&
         python manage.py makemigrations &&
         python manage.py migrate &&
         echo 'Запуск Gunicorn...' &&
