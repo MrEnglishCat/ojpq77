@@ -18,8 +18,7 @@ def upload_jsn(request):
 
         if form.is_valid():
             json_data = form.cleaned_data['json_data']
-
-            JSNUploadModel.objects.bulk_create(map(lambda item: JSNUploadModel(**item), json_data))
+            JSNUploadModel.objects.bulk_create(map(lambda item: JSNUploadModel(name=item["name"], date=item["date"]), json_data))
 
             success_message = 'Файл успешно загружен!'
         else:
